@@ -6,7 +6,8 @@
 # Python 包
 numpy
 pillow
-pyqt5
+# pyqt5 使用系统 apt 安装，不要用 pip 在 Jetson 上安装
+# sudo apt-get install python3-pyqt5
 pyserial
 opencv-python
 
