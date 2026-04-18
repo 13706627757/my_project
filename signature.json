@@ -1,0 +1,45 @@
+{
+    "doc_id": "82aa2662-9e5e-4ccc-a8be-0621aed414fd",
+    "doc_name": "dataAll9.25",
+    "doc_version": "cded37465c47ae2c6419dc1b08e4f195",
+    "format": "onnx",
+    "version": 26,
+    "inputs": {
+        "Image": {
+            "dtype": "float32",
+            "shape": [
+                null,
+                224,
+                224,
+                3
+            ],
+            "name": "Image:0"
+        }
+    },
+    "outputs": {
+        "Confidences": {
+            "dtype": "float32",
+            "shape": [
+                null,
+                9
+            ],
+            "name": "sequential/dense_2/Softmax:0"
+        }
+    },
+    "tags": [],
+    "classes": {
+        "Label": [
+            "battery",
+            "bottles",
+            "cans",
+            "carrots",
+            "china",
+            "cobble",
+            "medicine",
+            "potato",
+            "turnip"
+        ]
+    },
+    "filename": "model.onnx",
+    "export_model_version": 1
+}

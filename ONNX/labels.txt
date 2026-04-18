@@ -1,0 +1,14 @@
+battery
+blank
+bottles
+brick
+cans
+capsule
+carrots
+china
+cobble
+medicine_box
+medicine_plate
+ointment
+potato
+turnip

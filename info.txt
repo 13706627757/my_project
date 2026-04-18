@@ -1,0 +1,25 @@
+ 10/18
+ 不同的接口放在同一个PyQt5线程里会出现信号混乱,因此考虑开两个线程处理两个接口 √
+ 10/19
+ 药片卡住
+ infer多次推理,可能是重复调用infer函数
+ 10/23
+ 推理混乱，0.5s延时的问题
+ 10/24
+ 同时接收到t 和 a  t让nano立刻推理，a让nano2秒后推理，后者会拍到异常状态
+
+
+battery
+blank
+bottles
+brick
+cans
+capsule
+carrots
+china
+cobble
+medicine_box
+medicine_plate
+ointment
+potato
+turnip
