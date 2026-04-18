@@ -30,7 +30,7 @@ def clean_maxpool_attributes(onnx_path: str, output_path: str = None):
             attrs = list(node.attribute)
             keep = []
             for attr in attrs:
-                if attr.name in ('ceil_mode', 'storage_order'):
+                if attr.name in ('ceil_mode', 'storage_order', 'dilations'):
                     print(f"Removing unsupported attribute '{attr.name}' from {node.name}")
                     removed += 1
                     continue
