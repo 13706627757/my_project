@@ -20,19 +20,35 @@ class YOLOv5Model:
         if not os.path.isfile(self.weights_path):
             raise FileNotFoundError(f"YOLOv5 weights file not found: {self.weights_path}")
 
-        # 在 Jetson Nano 上，ultralytics 通常不可用，直接用 torch.hub.load
-        self.model = torch.hub.load(
-            "ultralytics/yolov5",
-            "custom",
-            path=self.weights_path,
-            force_reload=False,
-            trust_repo=True,
-        )
-
-        self.model.to(self.device)
-        self.model.conf = self.conf_thres
-        self.model.iou = self.iou_thres
-        self.names = getattr(self.model, "names", {}) or {}
+        # 方案 1: 使用 YOLOv5 v5.0 版本（不依赖 ultralytics）
+        try:
+            self.model = torch.hub.load(
+                "ultralytics/yolov5",
+                "custom",
+                path=self.weights_path,
+                force_reload=False,
+                trust_repo=True,
+                _verbose=False,
+                branch='v5.0'  # 使用 v5.0 版本，不依赖 ultralytics
+            )
+            self.model.to(self.device)
+            self.model.conf = self.conf_thres
+            self.model.iou = self.iou_thres
+            self.names = getattr(self.model, "names", {}) or {}
+        except Exception as e:
+            print(f"[WARNING] torch.hub.load 失败: {e}")
+            print("[INFO] 尝试直接用 PyTorch 加载 .pt 文件...")
+            # 方案 2: 直接用 PyTorch 加载 .pt 文件
+            try:
+                self.model = torch.load(self.weights_path, map_location=self.device)
+                if isinstance(self.model, dict):
+                    # 如果是 state_dict，需要创建模型然后加载
+                    raise ValueError("Model is a state_dict, not a full model. Please use official YOLOv5 weights.")
+                self.model = self.model.to(self.device)
+                print("[SUCCESS] 直接 PyTorch 加载成功")
+            except Exception as e2:
+                print(f"[ERROR] 直接 PyTorch 加载也失败: {e2}")
+                raise RuntimeError(f"无法加载 YOLOv5 模型。错误: {e} | {e2}")
 
     def predict(self, image: Image.Image) -> Dict[str, Any]:
         if image.mode != "RGB":
