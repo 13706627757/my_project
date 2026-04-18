@@ -20,18 +20,14 @@ class YOLOv5Model:
         if not os.path.isfile(self.weights_path):
             raise FileNotFoundError(f"YOLOv5 weights file not found: {self.weights_path}")
 
-        try:
-            from ultralytics import YOLO
-
-            self.model = YOLO(self.weights_path)
-        except Exception:
-            self.model = torch.hub.load(
-                "ultralytics/yolov5",
-                "custom",
-                path=self.weights_path,
-                force_reload=False,
-                trust_repo=True,
-            )
+        # 在 Jetson Nano 上，ultralytics 通常不可用，直接用 torch.hub.load
+        self.model = torch.hub.load(
+            "ultralytics/yolov5",
+            "custom",
+            path=self.weights_path,
+            force_reload=False,
+            trust_repo=True,
+        )
 
         self.model.to(self.device)
         self.model.conf = self.conf_thres

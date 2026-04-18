@@ -24,5 +24,5 @@ opencv-python
 # pip3 install torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
 # 如果安装失败，请先检查 Python 版本：python3 --version
 
-# YOLOv5 相关
-ultralytics
+# YOLOv5 使用 torch.hub 加载，不需要 ultralytics 包
+# ultralytics 在 Jetson Nano 上通常无法安装
