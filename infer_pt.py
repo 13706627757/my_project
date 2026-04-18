@@ -18,7 +18,7 @@ def main():
     print("适用于 Jetson Nano，避免 ONNX 兼容性问题")
     print("=" * 60)
 
-    pt_path = 'weights/test1.pt'
+    pt_path = 'weights/test1_ts.pt' if os.path.exists('weights/test1_ts.pt') else 'weights/test1.pt'
     print(f"[INFO] 加载 YOLOv5 权重: {pt_path}")
     model = YOLOv5Model(weights_path=pt_path, conf_thres=0.4)
 
