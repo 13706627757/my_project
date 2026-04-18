@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QHBo
 from PyQt5.QtCore import QTimer
 from video import VideoThread
 from UI import GarbageCollectorUI
-from yolov5_model import YOLOv5Model
+# YOLOv5 ONNX 推理 - 无需 PyTorch，轻量级
+from yolov5_onnx_model import YOLOv5ONNXModel
 import cv2
 from PIL import Image
 import argparse
@@ -26,15 +27,15 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     # 计时器，定时发送信号，运行某个槽函数
     infer_timer = QTimer()
-    # 模型路径
-    weights_path = 'weights/test1.pt'
+    # ONNX 模型路径（从 .pt 转换而来）
+    onnx_path = 'ONNX/test1.onnx'
     # 摄像头
     camera = cv2.VideoCapture(0)
     # 设置拍摄的大小
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    # YOLOv5 模型
-    model = YOLOv5Model(weights_path=weights_path, conf_thres=0.4)
+    # YOLOv5 ONNX 模型（轻量级，不需要 PyTorch）
+    model = YOLOv5ONNXModel(onnx_path=onnx_path, conf_thres=0.4)
     # resnet
     # model = resnet_model.ONNXInferencer("resnet/resnet34.onnx")
     # model=resnet.resnet()
