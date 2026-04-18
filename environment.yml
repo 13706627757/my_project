@@ -1,7 +1,6 @@
 name: lobe-yolov5-py36
 channels:
   - conda-forge
-  - pytorch
 dependencies:
   - python=3.6
   - pip
@@ -11,6 +10,6 @@ dependencies:
   - pyserial
   - opencv
   - pip:
-    - torch==1.7.1
-    - torchvision==0.8.2
+    - torch==1.7.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+    - torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
     - opencv-python
