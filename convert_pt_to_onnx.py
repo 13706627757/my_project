@@ -49,30 +49,65 @@ def convert_pt_to_onnx(pt_path: str, onnx_path: str, img_size: int = 640):
         
         os.makedirs(os.path.dirname(onnx_path), exist_ok=True)
         
-        # 尝试多个 opset 版本，兼容不同的 onnxruntime 版本（特别是 Jetson Nano）
-        for opset_v in [9, 8]:
+        # 尝试不指定 opset（让 PyTorch 选择）或尝试多个 opset，寻找能生成最低 IR 的
+        exported_opset = None
+        for opset_v in [None, 13, 11, 9, 8]:
             try:
-                torch.onnx.export(
-                    model,
-                    dummy_input,
-                    onnx_path,
-                    input_names=["images"],
-                    output_names=["output0"],
-                    dynamic_axes={"images": {0: "batch_size"}},
-                    opset_version=opset_v,
-                    verbose=False,
-                    do_constant_folding=True
-                )
-                print(f"✓ 使用 opset_version={opset_v} 导出成功！")
+                if opset_v is None:
+                    print(f"  尝试不指定 opset_version（使用默认）...")
+                    torch.onnx.export(
+                        model,
+                        dummy_input,
+                        onnx_path,
+                        input_names=["images"],
+                        output_names=["output0"],
+                        dynamic_axes={"images": {0: "batch_size"}},
+                        verbose=False,
+                        do_constant_folding=True
+                    )
+                else:
+                    print(f"  尝试 opset_version={opset_v}...")
+                    torch.onnx.export(
+                        model,
+                        dummy_input,
+                        onnx_path,
+                        input_names=["images"],
+                        output_names=["output0"],
+                        dynamic_axes={"images": {0: "batch_size"}},
+                        opset_version=opset_v,
+                        verbose=False,
+                        do_constant_folding=True
+                    )
+                print(f"✓ 导出成功！")
+                exported_opset = opset_v
                 break
             except Exception as e:
-                print(f"  opset_version={opset_v} 导出失败: {e}")
+                err_msg = str(e).lower()
+                if opset_v is None:
+                    print(f"  默认 opset 导出失败: {e}")
+                else:
+                    print(f"  opset_version={opset_v} 导出失败: {e}")
                 if opset_v == 8:
                     raise
-                print(f"  尝试降级到 opset_version=8...")
+                print(f"  尝试下一个 opset 版本...")
         
         print(f"✓ 转换成功！ONNX 模型已保存到: {onnx_path}")
         print(f"  文件大小: {os.path.getsize(onnx_path) / (1024*1024):.2f} MB")
+
+        # 导出后尽量读取 ONNX 文件并打印 IR / opset 信息，便于验证传到 Jetson 的模型兼容性
+        try:
+            import onnx
+            m = onnx.load(onnx_path)
+            try:
+                irv = m.ir_version
+            except AttributeError:
+                irv = getattr(m, 'ir_version', 'unknown')
+            print(f"  导出后 ONNX IR version: {irv}")
+            if hasattr(m, 'opset_import') and m.opset_import:
+                ops = [(op.domain if hasattr(op, 'domain') else '', op.version) for op in m.opset_import]
+                print(f"  opset_imports: {ops}")
+        except Exception as e:
+            print(f"  无法读取 ONNX 文件以检查 IR/OPSET 信息: {e}")
         
     except Exception as e:
         print(f"✗ 转换失败: {e}")
