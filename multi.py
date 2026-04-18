@@ -14,9 +14,10 @@ import global_vars
 from serial_thread import Serial_thread
 from GPIO import GPIOThread
 from infer_thread import InferThread
-import resnet_model
-import resnet
+# import resnet_model
+# import resnet
 # import lmy_infer
+
 # from utils.jetson_capture import JetsonCapture
 # import jetson.inference
 # from m_infer import mInferThread#todo
