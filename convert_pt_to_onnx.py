@@ -5,6 +5,7 @@
 """
 
 import sys
+import os
 import torch
 
 def convert_pt_to_onnx(pt_path: str, onnx_path: str, img_size: int = 640):
@@ -48,17 +49,31 @@ def convert_pt_to_onnx(pt_path: str, onnx_path: str, img_size: int = 640):
         
         os.makedirs(os.path.dirname(onnx_path), exist_ok=True)
         
-        torch.onnx.export(
-            model,
-            dummy_input,
-            onnx_path,
-            input_names=["images"],
-            output_names=["output0"],
-            dynamic_axes={"images": {0: "batch_size"}},
-            opset_version=11,
-            verbose=False,
-            do_constant_folding=True
-        )
+        try:
+            torch.onnx.export(
+                model,
+                dummy_input,
+                onnx_path,
+                input_names=["images"],
+                output_names=["output0"],
+                dynamic_axes={"images": {0: "batch_size"}},
+                opset_version=10,
+                verbose=False,
+                do_constant_folding=True
+            )
+        except Exception as e10:
+            print(f"  opset_version=10 导出失败，尝试 opset_version=9: {e10}")
+            torch.onnx.export(
+                model,
+                dummy_input,
+                onnx_path,
+                input_names=["images"],
+                output_names=["output0"],
+                dynamic_axes={"images": {0: "batch_size"}},
+                opset_version=9,
+                verbose=False,
+                do_constant_folding=True
+            )
         
         print(f"✓ 转换成功！ONNX 模型已保存到: {onnx_path}")
         print(f"  文件大小: {os.path.getsize(onnx_path) / (1024*1024):.2f} MB")

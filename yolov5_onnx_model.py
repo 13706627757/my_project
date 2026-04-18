@@ -52,6 +52,9 @@ class YOLOv5ONNXModel:
             self.session = rt.InferenceSession(self.onnx_path, providers=providers)
         except Exception as e:
             print(f"[WARNING] onnxruntime 加载失败: {e}")
+            print(f"[WARNING] 当前 onnxruntime 版本: {getattr(rt, '__version__', 'unknown')}")
+            print("[WARNING] 如果出现 Unsupported model IR version，请使用 opset_version=10 或 9 重新导出模型，")
+            print("          并确认当前 Python 环境加载的是你实际使用的 onnxruntime。")
             raise
         
         # 获取输入输出名称
