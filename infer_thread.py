@@ -1,10 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QHBoxLayout, QWidget, QGridLayout
 from PyQt5.QtCore import QTimer
-from ONNX.example.onnx_example import ONNXModel
 import cv2
 from PIL import Image
-import onnxruntime as rt
 from PyQt5.QtCore import QThread, pyqtSignal
 import numpy as np
 import time
