@@ -14,9 +14,14 @@ opencv-python
 # 从 NVIDIA 官方源安装
 # pip install torch==1.7.0+cu102 torchvision==0.8.1+cu102 torchaudio==0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
 
-# 或者用 CPU 版本（如果不需要 GPU）
-torch==1.7.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
+# PyTorch on Jetson Nano must be installed manually, because the standard pip wheel may not support ARM aarch64
+# or your current Python version.
+# Recommended: install using the Jetson-specific wheel for your JetPack version.
+# Example for JetPack 4.6 / Python 3.6-3.8:
+# pip3 install torch==1.7.0+nv19.10 torchvision==0.8.1+nv19.10 -f https://download.pytorch.org/whl/torch_stable.html
+# Example for CPU-only on a compatible Python version:
+# pip3 install torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html
+# 如果安装失败，请先检查 Python 版本：python3 --version
 
 # YOLOv5 相关
 ultralytics
